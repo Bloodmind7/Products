@@ -93,5 +93,5 @@ public class Notebook {
 		return "Products [id=" + id + ", type=" + type + ", price=" + price + ", info=" + info + ", ordered=" + ordered
 				+ ", orderedDate=" + orderedDate + "]";
 	}
-
+//this text was added by other user
 }
