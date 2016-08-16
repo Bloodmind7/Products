@@ -2,6 +2,11 @@ package md.convertit.products.domain;
 
 import java.util.Date;
 
+/**
+ * This class represents a Notebook object
+ * @author Utilizator
+ *
+ */
 public class Notebook {
 
 	public static int stock;
