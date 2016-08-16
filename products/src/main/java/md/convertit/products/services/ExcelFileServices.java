@@ -1,14 +1,20 @@
 package md.convertit.products.services;
 
+import java.awt.print.Book;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import md.convertit.products.domain.Notebook;
 
@@ -72,8 +78,6 @@ public class ExcelFileServices implements FileService {
 		}
 			 
 			
-		
-		
 		autoSizeColumns(sheet);
 		workbook.write(fos);
 		fos.close();
@@ -93,8 +97,72 @@ public class ExcelFileServices implements FileService {
 	}
 
 	public List<Notebook> readAll(String path) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	
+		    List<Notebook> listNotebook= new ArrayList<>();
+		    FileInputStream inputStream = new FileInputStream(new File(path));
+		 
+		    Workbook workbook = new HSSFWorkbook(inputStream);
+		    Sheet firstSheet = workbook.getSheetAt(0);
+		    Iterator<Row> iterator = firstSheet.iterator();
+		 
+		    while (iterator.hasNext()) {
+		        Row nextRow = iterator.next();
+		        Iterator<Cell> cellIterator = nextRow.cellIterator();
+		        Notebook notebook = new Notebook();
+		 
+		        while (cellIterator.hasNext()) {
+		            Cell nextCell = cellIterator.next();
+		            int columnIndex = nextCell.getColumnIndex();
+		 
+		            switch (columnIndex) {
+		            case 1:
+		            	notebook.setType((String) getCellValue(nextCell));
+		                break;
+		            case 2:
+		            	notebook.setPrice((double) getCellValue(nextCell));
+		                break;
+		            case 3:
+		            	notebook.setStock((int) getCellValue(nextCell));
+		                break;
+		            case 4:
+		            	notebook.setInfo((String) getCellValue(nextCell));
+		                break;
+		            case 5:
+		            	notebook.setOrdered((boolean) getCellValue(nextCell));
+		                break;
+		            case 6:
+		            	notebook.setOrderedDate((Date) getCellValue(nextCell));
+		                break;
+		            }
+		 
+		 
+		        }
+		        listNotebook.add(notebook);
+		    }
+		 
+		    ((FileInputStream) workbook).close();
+		    inputStream.close();
+		 
+		    return listNotebook;
+		
+		
+		
+		
+	}
+
+	private Object getCellValue(Cell nextCell) {
+		 switch (nextCell.getCellType()) {
+		    case Cell.CELL_TYPE_STRING:
+		        return nextCell.getStringCellValue();
+		 
+		    case Cell.CELL_TYPE_BOOLEAN:
+		        return nextCell.getBooleanCellValue();
+		 
+		    case Cell.CELL_TYPE_NUMERIC:
+		        return nextCell.getNumericCellValue();
+		    }
+		 
+		    return null;
 	}
 	
 	

@@ -1,5 +1,9 @@
 package md.convertit.services.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.util.List;
 
@@ -23,5 +27,14 @@ public class ExcelFileServiceTest {
 		List<Notebook> notebookList = DemoData.getDemoData(TOTAL_DEMO_NOTEBOOKS);
 		fs.saveAll(notebookList, PATH);
 	
+}
+	
+	@Test
+	public void readAllTest() throws Exception{
+		List<Notebook> listNotebook = fs.readAll(PATH);
+		//verificam sa fie not null
+		assertNotNull(listNotebook);
+		assertFalse(listNotebook.isEmpty());
+	    assertEquals(TOTAL_DEMO_NOTEBOOKS, listNotebook.size());
 }
 }
