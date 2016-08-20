@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -37,41 +38,41 @@ public class ExcelFileServices implements FileService {
 		//Set value to new value
 		cell.setCellValue("Type");
 		
-		Cell cell1 = row.createCell(1);
-		cell1.setCellValue("Price");
+		cell = row.createCell(1);
+		cell.setCellValue("Price");
 		
-		Cell cell2 = row.createCell(2);
-		cell2.setCellValue("Stock");
+		cell = row.createCell(2);
+		cell.setCellValue("Stock");
 		
-		Cell cell3 = row.createCell(3);
-		cell3.setCellValue("Info");
+		cell = row.createCell(3);
+		cell.setCellValue("Info");
 		
 		Cell cell4 = row.createCell(4);
-		cell4.setCellValue("Ordered");
+		cell.setCellValue("Ordered");
 		
 
-		Cell cell5 = row.createCell(5);
-		cell5.setCellValue("OrderedDate");
+		cell = row.createCell(5);
+		cell.setCellValue("OrderedDate");
 		
-		 int rowIndex =1;
+		 int rowIndex =0;
 		 for (int i = rowIndex; i  < notebooks.size(); i++) {
 		 	 
 			//Create a new row in current sheet
-				Row row1 = sheet.createRow(i);
+				Row row1 = sheet.createRow(i+1);
 				//Create a new cell in current row
-				Cell celll = row1.createCell(0);
+				cell = row1.createCell(0);
 				//Set value to new value
-				celll.setCellValue(notebooks.get(i).getType());
-				celll = row1.createCell(1);
-				celll.setCellValue(notebooks.get(i).getPrice());
-				celll = row1.createCell(2);
-				celll.setCellValue(notebooks.get(i).getStock());
-				celll = row1.createCell(3);
-				celll.setCellValue(notebooks.get(i).getInfo());
-				celll = row1.createCell(4);
-				celll.setCellValue(notebooks.get(i).isOrdered());
-				celll = row1.createCell(5);
-				celll.setCellValue(notebooks.get(i).getOrderedDate());
+				cell.setCellValue(notebooks.get(i).getType());
+				cell = row1.createCell(1);
+				cell.setCellValue(notebooks.get(i).getPrice());
+				cell = row1.createCell(2);
+				cell.setCellValue(notebooks.get(i).getStock());
+				cell = row1.createCell(3);
+				cell.setCellValue(notebooks.get(i).getInfo());
+				cell = row1.createCell(4);
+				cell.setCellValue(notebooks.get(i).isOrdered());
+				cell = row1.createCell(5);
+				cell.setCellValue(notebooks.get(i).getOrderedDate());
 				
 				
 				
@@ -107,6 +108,9 @@ public class ExcelFileServices implements FileService {
 		 
 		    while (iterator.hasNext()) {
 		        Row nextRow = iterator.next();
+		        if (nextRow.getRowNum() == 0){
+		        	continue;
+		        }
 		        Iterator<Cell> cellIterator = nextRow.cellIterator();
 		        Notebook notebook = new Notebook();
 		 
@@ -115,23 +119,28 @@ public class ExcelFileServices implements FileService {
 		            int columnIndex = nextCell.getColumnIndex();
 		 
 		            switch (columnIndex) {
-		            case 1:
+		            case 0:
 		            	notebook.setType((String) getCellValue(nextCell));
 		                break;
-		            case 2:
+		            case 1:
 		            	notebook.setPrice((double) getCellValue(nextCell));
 		                break;
-		            case 3:
-		            	notebook.setStock((int) getCellValue(nextCell));
+		            case 2: 
+		            	Double d = new Double((double) getCellValue(nextCell));
+		            	int i = d.intValue();
+		            	System.out.println(getCellValue(nextCell));
+		            	notebook.setStock(i);
 		                break;
-		            case 4:
+		            case 3:
 		            	notebook.setInfo((String) getCellValue(nextCell));
 		                break;
-		            case 5:
+		            case 4:
 		            	notebook.setOrdered((boolean) getCellValue(nextCell));
 		                break;
-		            case 6:
-		            	notebook.setOrderedDate((Date) getCellValue(nextCell));
+		            case 5:
+		            	 Date javaDate= DateUtil.getJavaDate((double) getCellValue(nextCell));
+		            	System.out.println(getCellValue(nextCell));
+		            	notebook.setOrderedDate(javaDate);
 		                break;
 		            }
 		 
@@ -140,7 +149,7 @@ public class ExcelFileServices implements FileService {
 		        listNotebook.add(notebook);
 		    }
 		 
-		    ((FileInputStream) workbook).close();
+		//workbook.close();
 		    inputStream.close();
 		 
 		    return listNotebook;
